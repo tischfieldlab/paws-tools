@@ -9,6 +9,7 @@ from paws_tools.slp_to_csv import get_xy_list_from_labels
 @click.version_option()
 def cli():
     ''' Toolbox for working with PAWS
+
     '''
     pass  # pylint: disable=unnecessary-pass
 
