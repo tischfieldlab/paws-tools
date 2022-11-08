@@ -9,16 +9,16 @@ on:
       - "tests/**"
       - ".github/workflows/ci.yml"
 #      - "environment.yml"
-#      - "setup.cfg"
+      - "setup.cfg"
   push:
     branches:
-      - master
-#    paths:
-#      - "paws_tools/**"
-#      - "tests/**"
-#      - ".github/workflows/ci.yml"
+      - main
+    paths:
+      - "paws_tools/**"
+      - "tests/**"
+      - ".github/workflows/ci.yml"
 #      - "environment.yml"
-#      - "setup.cfg"
+      - "setup.cfg"
 
 jobs:
   # Lint with black, docstring check with pydocstyle, static type checking with mypy
