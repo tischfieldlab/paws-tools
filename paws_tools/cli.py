@@ -15,7 +15,7 @@ def cli():
 
 
 @cli.command(name="slp-to-paws-csv", short_help="convert SLEAP .slp file to PAWS importable csv files")
-@click.argument('slp_file', type=click.File())
+@click.argument('slp_file', type=click.Path(exists=True, dir_okay=False))
 @click.option('-bp', '--body-part', default='Toe', help='Name of the body part to extract')
 def slp_to_paws_csv(slp_file, body_part):
     ''' Please document this with doc strings. The information shows up in the CLI
