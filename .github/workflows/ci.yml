@@ -54,17 +54,13 @@ jobs:
       run: |
         pip install --editable .[dev]
 
-    - name: Run flake8
+    - name: Run Black
       run: |
-        flake8
+        black --diff --check paws_tools tests
 
-#    - name: Run Black
-#      run: |
-#        black --check paws_tools tests
-
-#    - name: Run pydocstyle
-#      run: |
-#        pydocstyle --convention=google paws_tools/
+    - name: Run pydocstyle
+      run: |
+        pydocstyle --convention=google paws_tools/
 
     - name: Run MyPy
       run: |

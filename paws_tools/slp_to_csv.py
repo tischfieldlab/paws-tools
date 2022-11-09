@@ -1,15 +1,17 @@
+"""Please add doc string for this module."""
+
 from sleap_io import Labels
 
 
 def get_name_list(labels: Labels) -> list[str]:
-    ''' Please add doc strings to you functions
+    """Please add doc strings to you functions.
 
-    Parameters:
-    labels (Labels): What are these labels for?
+    Args:
+        labels: What are these labels for?
 
     Returns:
-    list[str] - List of node names found in Labels
-    '''
+        list[str] - List of node names found in Labels
+    """
     node_name_list = []
     for frame in labels.labeled_frames:
         user_instances = frame.user_instances
@@ -29,19 +31,18 @@ def get_name_list(labels: Labels) -> list[str]:
     return node_name_list
 
 
-def get_xy_list_from_labels(labels: Labels, node_name: str = 'Toe') -> tuple[list[float], list[float]]:
-    ''' Please add doc strings to you functions
+def get_xy_list_from_labels(labels: Labels, node_name: str = "Toe") -> tuple[list[float], list[float]]:
+    """Please add doc strings to you functions.
 
-    Parameters:
-    labels (Labels): What are these labels you are taking?
-    node_name (str): What is node_name, and how does it affect this function
+    Args:
+        labels: What are these labels you are taking?
+        node_name: What is node_name, and how does it affect this function
 
     Returns:
-    tuple of lists of float - list of the x and y positions, respectively
-    '''
-
-    topbox = 'Top_Box'
-    botbox = 'Bot_Box'
+        tuple of lists of float - list of the x and y positions, respectively
+    """
+    topbox = "Top_Box"
+    botbox = "Bot_Box"
 
     x_list = []
     y_list = []
@@ -71,13 +72,13 @@ def get_xy_list_from_labels(labels: Labels, node_name: str = 'Toe') -> tuple[lis
         dist_frame = abs(top_y - bot_y)
 
         # 50 mm bc of camera angle
-        unit_pixels_mm = float(dist_frame/50)
+        unit_pixels_mm = float(dist_frame / 50)
 
         # index of target node to get x,y
         node_index = node_name_list.index(node_name)
 
         # want input unit as mm, thus pixels/(pixels/mm)
-        x_list.append(frame.user_instances[0][node_index].x/unit_pixels_mm)
-        y_list.append(frame.user_instances[0][node_index].y/unit_pixels_mm)
+        x_list.append(frame.user_instances[0][node_index].x / unit_pixels_mm)
+        y_list.append(frame.user_instances[0][node_index].y / unit_pixels_mm)
 
     return x_list, y_list
