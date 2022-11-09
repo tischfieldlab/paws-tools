@@ -56,7 +56,7 @@ jobs:
 
     - name: Run Black
       run: |
-        black --check paws_tools tests
+        black --diff --check paws_tools tests
 
     - name: Run pydocstyle
       run: |
