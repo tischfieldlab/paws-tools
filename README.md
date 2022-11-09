@@ -1,6 +1,7 @@
 # paws-tools
 [![CI](https://github.com/tischfieldlab/paws-tools/actions/workflows/ci.yml/badge.svg)](https://github.com/tischfieldlab/paws-tools/actions/workflows/ci.yml)
-collection of tools for working with PAWS
+
+A collection of tools for working with PAWS
 
 
 # Installation
