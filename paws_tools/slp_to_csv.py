@@ -1,14 +1,16 @@
+"""Please add doc string for this module."""
+
 from sleap_io import Labels
 
 
 def get_name_list(labels: Labels) -> list[str]:
-    """Please add doc strings to you functions
+    """Please add doc strings to you functions.
 
-    Parameters:
-    labels (Labels): What are these labels for?
+    Args:
+        labels: What are these labels for?
 
     Returns:
-    list[str] - List of node names found in Labels
+        list[str] - List of node names found in Labels
     """
     node_name_list = []
     for frame in labels.labeled_frames:
@@ -30,16 +32,15 @@ def get_name_list(labels: Labels) -> list[str]:
 
 
 def get_xy_list_from_labels(labels: Labels, node_name: str = "Toe") -> tuple[list[float], list[float]]:
-    """Please add doc strings to you functions
+    """Please add doc strings to you functions.
 
-    Parameters:
-    labels (Labels): What are these labels you are taking?
-    node_name (str): What is node_name, and how does it affect this function
+    Args:
+        labels: What are these labels you are taking?
+        node_name: What is node_name, and how does it affect this function
 
     Returns:
-    tuple of lists of float - list of the x and y positions, respectively
+        tuple of lists of float - list of the x and y positions, respectively
     """
-
     topbox = "Top_Box"
     botbox = "Bot_Box"
 
