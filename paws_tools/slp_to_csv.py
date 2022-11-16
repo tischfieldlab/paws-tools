@@ -1,84 +1,63 @@
 """Please add doc string for this module."""
 
+import pandas as pd
 from sleap_io import Labels
+import numpy as np
 
 
-def get_name_list(labels: Labels) -> list[str]:
-    """Please add doc strings to you functions.
-
-    Args:
-        labels: What are these labels for?
-
-    Returns:
-        list[str] - List of node names found in Labels
-    """
-    node_name_list = []
-    for frame in labels.labeled_frames:
-        user_instances = frame.user_instances
-
-        n_user_instances = len(user_instances)
-        if n_user_instances == 0:
-            continue  # skip frames which do not have a ground truth annotation
-
-        f_length = len(frame.user_instances[0].skeleton.nodes)
-        # print(f_length)
-
-        for i in range(f_length):
-            node_name_list.append(frame.user_instances[0].skeleton.nodes[i].name)
-
-        # break
-
-    return node_name_list
-
-
-def get_xy_list_from_labels(labels: Labels, node_name: str = "Toe") -> tuple[list[float], list[float]]:
-    """Please add doc strings to you functions.
+def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.DataFrame:
+    """Extracts a single point from `labels` and returns as a pandas DataFrame.
 
     Args:
-        labels: What are these labels you are taking?
-        node_name: What is node_name, and how does it affect this function
+        labels: labels from which to extract data
+        node_name: name of the node for which to extract data
 
     Returns:
-        tuple of lists of float - list of the x and y positions, respectively
+       pandas DataFrame containing node locations, frame index, and video data
     """
-    topbox = "Top_Box"
-    botbox = "Bot_Box"
-
-    x_list = []
-    y_list = []
-
-    # make node_name_list to record the index of the target node
-    node_name_list = get_name_list(labels)
-    # print(node_name_list)
-
+    data = []
     for frame in labels.labeled_frames:
 
-        user_instances = frame.user_instances
-        n_user_instances = len(user_instances)
+        data.append(
+            {
+                "video": frame.video.filename,
+                "frame_idx": frame.frame_idx,
+                "x": frame.predicted_instances[0].points[node_name].x,
+                "y": frame.predicted_instances[0].points[node_name].y,
+            }
+        )
 
-        # skip if no ground truth annotation
-        if n_user_instances == 0:
-            continue
+    return pd.DataFrame(data)
 
-        # need to get x,y by node name
 
-        # calculate distance and mm
-        top_index = node_name_list.index(topbox)
-        top_y = frame.user_instances[0][top_index].y
+def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_distance: float) -> Labels:
+    """Converts the coordinates in `labels` from px to physical distance units (i.e. millimeters).
 
-        bot_index = node_name_list.index(botbox)
-        bot_y = frame.user_instances[0][bot_index].y
+    Args:
+        labels: labels instance to convert
+        top_node: node name of first calibration point
+        bot_node: node name of second calibration point
+        true_distance: true physical distance between `top_node` and `bot_node`
 
-        dist_frame = abs(top_y - bot_y)
+    Returns:
+        Labels instance with point units converted to physical distances
+    """
+    Top_index = labels.skeletons[0].index(top_node)
+    Bot_index = labels.skeletons[0].index(bot_node)
 
-        # 50 mm bc of camera angle
-        unit_pixels_mm = float(dist_frame / 50)
+    conv_factors = {}
+    for video in labels.videos:
+        box_cords = labels.numpy(video)[:, 0, (Top_index, Bot_index), 1]
 
-        # index of target node to get x,y
-        node_index = node_name_list.index(node_name)
+        box_median = np.nanmedian(box_cords, axis=0)
+        mm2px = true_distance / abs(np.diff(box_median))
+        conv_factors[video] = mm2px
 
-        # want input unit as mm, thus pixels/(pixels/mm)
-        x_list.append(frame.user_instances[0][node_index].x / unit_pixels_mm)
-        y_list.append(frame.user_instances[0][node_index].y / unit_pixels_mm)
+    for frame in labels.labeled_frames:
+        mm2px = conv_factors[frame.video]
+        for instance in frame.predicted_instances:
+            for key, val in instance.points:
+                instance.points[key].x = val.x * mm2px
+                instance.points[key].y = val.y * mm2px
 
-    return x_list, y_list
+    return labels
