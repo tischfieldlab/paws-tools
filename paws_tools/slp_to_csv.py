@@ -51,12 +51,12 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
 
         box_median = np.nanmedian(box_cords, axis=0)
         mm2px = true_distance / abs(np.diff(box_median))
-        conv_factors[video] = mm2px
+        conv_factors[video.filename] = mm2px
 
     for frame in labels.labeled_frames:
-        mm2px = conv_factors[frame.video]
+        mm2px = conv_factors[frame.video.filename]
         for instance in frame.predicted_instances:
-            for key, val in instance.points:
+            for key, val in instance.points.items():
                 instance.points[key].x = val.x * mm2px
                 instance.points[key].y = val.y * mm2px
 
