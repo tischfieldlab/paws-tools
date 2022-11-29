@@ -3,6 +3,8 @@
 import numpy as np
 import pandas as pd
 from sleap_io import Labels
+import numpy as np
+import matplotlib as plt
 
 #'Test'
 
@@ -84,3 +86,53 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
                 instance.points[key].y = val.y * mm2px
 
     return labels
+
+
+def plot_y_to_time(
+    labels: Labels, ycord_list: list, node_name: str = "Toe", mice_coordinate: int = 500, true_distance: float = 46.83
+) -> None:
+
+    """Extracts a single point from `labels` and returns as a pandas DataFrame.
+
+    Args:
+        labels: labels from which to extract video data for box_list
+        ycord_list: list of y coordinates from the video
+        node_name: name of the node for which ycord_list was extracted from
+        mice_coordinate: constant for mice coordinate to calculate shift
+        true_distance: true physical distance between `top_node` and `bot_node`
+
+    Returns:
+       Saves plot y-coordinates vs. time (ms) line graph as a file png in directory
+    """
+
+    file_name = labels.labeled_frames[0].video.filename
+
+    box_list = []
+
+    for video in labels.videos:
+        box_list.append(labels.numpy(video)[:, 0, 6:8, 1])
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    for trace, box in zip(ycord_list[2:4], box_list[2:4]):
+        normtrace = trace - np.mean(trace[0:400])
+        time = np.linspace(0, 2000, 8000)
+        normtrace = sg(normtrace, 41, 1)
+        start = np.where(-normtrace > 1)[0][0]
+        # 500 = mice_coordinate
+        shift = (mice_coordinate - start) * 0.25
+        box_median = np.median(box, axis=0)
+        # 46.83 = true_distance
+        mm2px = true_distance / abs(np.diff(box_median))
+        plt.plot(time[0 : len(trace) - 1] + shift, np.diff(-normtrace * mm2px) / 0.25)
+        # ax.plot(avg_trials[cell_num,:],'k')
+        plt.ylabel("Y axis velocity (mm/ms)")
+        plt.xlabel("Time (ms)")
+        # plt.title('Chronic-SNI, Saline, Right')
+
+    plt.xlim(-30, 400)
+    fig.tight_layout()
+    plt.legend(["Y coordination"])
+    plt.savefig(f"{file_name}_{node_name}.png")
+    plt.clf()
+    # plt.show()
