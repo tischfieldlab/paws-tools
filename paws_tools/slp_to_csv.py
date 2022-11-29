@@ -108,19 +108,17 @@ def plot_y_to_time(labels: Labels, ycord_list: list, node_name: str = "Toe") -> 
         time = np.linspace(0, 2000, 8000)
         normtrace = sg(normtrace, 41, 1)
         start = np.where(-normtrace > 1)[0][0]
-        # 500 = mice_coordinate
-        # shift = (mice_coordinate - start) * 0.25
         # 46.83 = true_distance
         # mm2px = true_distance / abs(np.diff(box_median))
         plt.plot(time[0 : len(ycord_list) - 1], y)
         # ax.plot(avg_trials[cell_num,:],'k')
         plt.ylabel("Y axis velocity (mm/ms)")
         plt.xlabel("Time (ms)")
-        # plt.title('Chronic-SNI, Saline, Right')
 
+    plt.title(f"{file_name}_{node_name}_ycord_vs_time(ms)")
     plt.xlim(-30, 400)
     fig.tight_layout()
     plt.legend(["Y coordination"])
-    plt.savefig(f"{file_name}_{node_name}.png")
+    plt.savefig(f"{file_name}_{node_name}_ycord_vs_time(ms).png")
     plt.clf()
     # plt.show()
