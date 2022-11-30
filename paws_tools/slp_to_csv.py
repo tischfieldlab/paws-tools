@@ -16,21 +16,24 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
        pandas DataFrame containing node locations, frame index, and video data
     """
     data = []
+    node = labels.skeletons[0][node_name]
     for frame in labels.labeled_frames:
 
         data.append(
             {
                 "video": frame.video.filename,
                 "frame_idx": frame.frame_idx,
-                "x": frame.predicted_instances[0].points[node_name].x,
-                "y": frame.predicted_instances[0].points[node_name].y,
+                "x": frame.predicted_instances[0].points[node].x,
+                "y": frame.predicted_instances[0].points[node].y,
+                
+
             }
         )
 
     return pd.DataFrame(data)
 
 
-def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_distance: float) -> Labels:
+def convert_physical_units(labels: Labels, top_node: str, bot_node: str, pix_height: int, true_distance: float) -> Labels:
     """Converts the coordinates in `labels` from px to physical distance units (i.e. millimeters).
 
     Args:
@@ -51,13 +54,15 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
 
         box_median = np.nanmedian(box_cords, axis=0)
         mm2px = true_distance / abs(np.diff(box_median))
-        conv_factors[video.filename] = mm2px
+        conv_factors[video.filename] = mm2px[0]
+
 
     for frame in labels.labeled_frames:
         mm2px = conv_factors[frame.video.filename]
+        height = 512
         for instance in frame.predicted_instances:
             for key, val in instance.points.items():
                 instance.points[key].x = val.x * mm2px
-                instance.points[key].y = val.y * mm2px
+                instance.points[key].y = (height - val.y) * mm2px
 
     return labels
