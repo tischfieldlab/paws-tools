@@ -1,41 +1,68 @@
 # script to extract behavioral measurements and painscores from proanalyst CSVs
-library(paws)
+library(paws) #need to install via github
+library(ggplot2)
+library(dplyr)
+library(kde1d)
+library(zoo)
 
-# initializing lists
-# I remember putting the CSVs for a given 'condition' in one folder and running this script for each folder lol
-setwd("C:/Users/saboorlab-adm/Downloads/baseline db CSVs/baseline db CSVs") # I set the wd to write an output file to the same location as the input trials
-baseline_db <- list()
-baseline_db_features <- list()
-baseline_db_scores <-list()
-bdb_scores_pre <- list()
-
-# reading files and constructing trial list
-# change this section to reflect the format of DLC  eg. to 'skip' the headers and work with x and y coordinate columns of interest
-a <- list.files("C:/Users/saboorlab-adm/Downloads/baseline db CSVs/baseline db CSVs")
-for (i in a){
-  b <- read.csv(i, comment.char='#', header=FALSE
-  )
-  names(b) <- c(
-    'index', 'time', 'x', 'y', 'distance', 'speed',
-    'x.velocity', 'y.velocity'
-  )
-  baseline_db[[length(baseline_db)+1]] = b
+create_group <- function(directory, strain){
+  setwd(directory) # I set the wd to write an output file to the same location as the input trials
+  baseline_db <- list()
+  baseline_db_features <- list()
+  baseline_db_scores <-list()
+  bdb_scores_pre <- list()
+  bdb_scores_post <- list()
+  
+  a <- list.files(directory)
+  for (i in a){
+    b <- read.csv(i, sep = "\t")
+    baseline_db[[length(baseline_db)+1]] = b
+  }
+  
+  for (i in 1:length(baseline_db)) { 
+    baseline_db_features[[i]] <- extract_features(zoo::na.spline(baseline_db[[i]]$x), zoo::na.spline(baseline_db[[i]]$y))
+  }
+  
+  # get pre peak scores
+  for (i in 1:length(baseline_db_features)){
+    bdb_scores_pre[[i]] <- pain_score(baseline_db_features[[i]], strains=strain, feature.set = "pre.peak")
+  }
+  
+  # get pre peak scores
+  for (i in 1:length(baseline_db_features)){
+    bdb_scores_post[[i]] <- pain_score(baseline_db_features[[i]], strains=strain, feature.set = "post.peak")
+  }
+  
+  
+  pre_score_kde <- kde1d(unlist(bdb_scores_pre,use.names = FALSE))
+  post_score_kde <- kde1d(unlist(bdb_scores_post,use.names = FALSE))
+  
+  return(post_score_kde)
 }
 
-# get behavior features
-# change this section to the relevant column vectors
-for (i in 1:length(baseline_db)) { 
-  baseline_db_features[[i]] <- extract_features(baseline_db[[i]]$x, baseline_db[[i]]$y)
-}
+c_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/1VF-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/1VF-Saline","C57B6-")
+plot(x = c_kde,  ylim = c(0,1), xlim = c(-3,8), main = "1VF Baseline", xlab = "PAWS Score", ylab = "Density", col = 'blue')
+lines(x = s_kde, col = 'orange')
+legend( x = "topright", legend = c("CNO","Saline"),col = c("blue","orange"), lwd=1, lty=c(1,1), pch=c(NA,NA), cex = 1 )
 
-# for the following sections, we talked about this and you can do whatever dimensionality reduction you want! 
-# get post peak scores
-for (i in 1:length(baseline_db_features)){
-  baseline_db_scores[[i]] <- pain_score(baseline_db_features[[i]], strains='C57B6-')
-}
 
-# get pre peak scores
-for (i in 1:length(baseline_db_features)){
-  bdb_scores_pre[[i]] <- pain_score(baseline_db_features[[i]], strains='C57B6-', feature.set = "pre.peak")
-}
+c_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/4VF-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/4VF-Saline","C57B6-")
+plot(x = c_kde,  ylim = c(0,1), xlim = c(-3,8), main = "4VF Baseline", xlab = "PAWS Score", ylab = "Density", col = 'blue')
+lines(x = s_kde, col = 'orange')
+legend( x = "topright", legend = c("CNO","Saline"),col = c("blue","orange"), lwd=1, lty=c(1,1), pch=c(NA,NA), cex = 1 )
 
+
+c_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/Brush-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/Brush-Saline","C57B6-")
+plot(x = c_kde,  ylim = c(0,1), xlim = c(-3,8), main = "Brush Baseline", xlab = "PAWS Score", ylab = "Density", col = 'blue')
+lines(x = s_kde, col = 'orange')
+legend( x = "topright", legend = c("CNO","Saline"),col = c("blue","orange"), lwd=1, lty=c(1,1), pch=c(NA,NA), cex = 1 )
+
+
+c_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/Pin-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/DI-Baseline-CSVs/Pin-Saline","C57B6-")
+plot(x = c_kde,  ylim = c(0,1), xlim = c(-3,8), main = "Pinprick Baseline", xlab = "PAWS Score", ylab = "Density", col = 'blue')
+lines(x = s_kde, col = 'orange')
+legend( x = "topright", legend = c("CNO","Saline"),col = c("blue","orange"), lwd=1, lty=c(1,1), pch=c(NA,NA), cex = 1 )
