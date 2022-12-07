@@ -7,6 +7,11 @@ import click
 import sleap_io
 
 from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe
+from paws_tools.util import click_monkey_patch_option_show_defaults
+
+
+# Show click option defaults
+click_monkey_patch_option_show_defaults()
 
 
 @click.group()
