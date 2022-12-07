@@ -25,15 +25,15 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
                 "frame_idx": frame.frame_idx,
                 "x": frame.predicted_instances[0].points[node].x,
                 "y": frame.predicted_instances[0].points[node].y,
-                
-
             }
         )
 
     return pd.DataFrame(data)
 
 
-def convert_physical_units(labels: Labels, top_node: str, bot_node: str, pix_height: int, true_distance: float) -> Labels:
+def convert_physical_units(
+    labels: Labels, top_node: str, bot_node: str, pix_height: int, true_distance: float
+) -> Labels:
     """Converts the coordinates in `labels` from px to physical distance units (i.e. millimeters).
 
     Args:
@@ -55,7 +55,6 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, pix_hei
         box_median = np.nanmedian(box_cords, axis=0)
         mm2px = true_distance / abs(np.diff(box_median))
         conv_factors[video.filename] = mm2px[0]
-
 
     for frame in labels.labeled_frames:
         mm2px = conv_factors[frame.video.filename]
