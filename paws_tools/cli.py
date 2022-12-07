@@ -29,14 +29,21 @@ def cli():
 @click.option("--cal-dist", default=1.0, type=float, help="Physical distance between --cal-node1 and --cal-node2")
 @click.option("--frame-height", default=512, type=int, help="Pixel height of video frames")
 @click.option(
-    "--dest-dir", default=os.getcwd(), type=click.Path(file_okay=False), help="Name of the body part to extract"
+    "--dest-dir",
+    default=os.getcwd(),
+    type=click.Path(file_okay=False),
+    help="Directory where resulting TSV files should be saved",
 )
 def slp_to_paws_csv(
     slp_file: str, body_part: str, cal_node1: str, cal_node2: str, cal_dist: float, frame_height: int, dest_dir: str
 ):
-    """Please document this with doc strings.
+    """Given a SLEAP *.slp file, extract the coordinates for the body part specified by \
+--body-part and save a tab-separated-values (TSV) file, for each video in the dataset.
 
-    The information shows up in the CLI when the --help flag is passed.
+    Additionally, this command will convert from pixel units to physical units given proper
+    calibration information. See options --cal-*.
+
+    The y-axis may also be inverted given --frame-height.
     """
     labels = sleap_io.load_slp(slp_file)
 
@@ -45,6 +52,7 @@ def slp_to_paws_csv(
     labels = convert_physical_units(labels, cal_node1, cal_node2, cal_dist)
     coords = node_positions_to_dataframe(labels, body_part)
 
+    # for each video, save the dataframe subset to a TSV file
     os.makedirs(dest_dir, exist_ok=True)
     for group, df in coords.groupby("video"):
         base = os.path.splitext(os.path.basename(group))[0]
