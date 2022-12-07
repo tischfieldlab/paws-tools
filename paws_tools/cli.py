@@ -2,9 +2,9 @@
 
 
 import os
+
 import click
 import sleap_io
-import pandas as pd
 
 from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe
 
@@ -26,7 +26,9 @@ def cli():
 @click.option(
     "--dest-dir", default=os.getcwd(), type=click.Path(file_okay=False), help="Name of the body part to extract"
 )
-def slp_to_paws_csv(slp_file, body_part, cal_node1, cal_node2, cal_dist, dest_dir):
+def slp_to_paws_csv(
+    slp_file: str, body_part: str, cal_node1: str, cal_node2: str, cal_dist: float, frame_height: int, dest_dir: str
+):
     """Please document this with doc strings.
 
     The information shows up in the CLI when the --help flag is passed.
@@ -34,7 +36,7 @@ def slp_to_paws_csv(slp_file, body_part, cal_node1, cal_node2, cal_dist, dest_di
     labels = sleap_io.load_slp(slp_file)
 
     # convert labels coords to physical units
-    labels = invert_y_axis(labels, 512)
+    labels = invert_y_axis(labels, frame_height)
     labels = convert_physical_units(labels, cal_node1, cal_node2, cal_dist)
     coords = node_positions_to_dataframe(labels, body_part)
 

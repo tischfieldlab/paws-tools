@@ -1,8 +1,8 @@
 """Please add doc string for this module."""
 
+import numpy as np
 import pandas as pd
 from sleap_io import Labels
-import numpy as np
 
 
 def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.DataFrame:
@@ -31,7 +31,7 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
 
 
 def invert_y_axis(labels: Labels, frame_height: int) -> Labels:
-    """Invert the Y-coordinates such that the origin is switched between bottom-left and top-left
+    """Invert the Y-coordinates such that the origin is switched between bottom-left and top-left.
 
     If the origin is bottom-left, the resulting origin will be top-left.
     If the origin is top-left, the resulting origin will be bottom-left.
