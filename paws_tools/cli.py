@@ -1,8 +1,6 @@
 """CLI entry-point for paws-tools."""
 
-
 import os
-
 import click
 import sleap_io
 
