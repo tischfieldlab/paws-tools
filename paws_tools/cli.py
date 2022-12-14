@@ -6,7 +6,7 @@ import os
 import click
 import sleap_io
 
-from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe
+from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe, slp_csv_plot
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
 
@@ -69,7 +69,7 @@ def slp_to_paws_csv(
 @click.option(
     "--dest-dir", default=os.getcwd(), type=click.Path(file_okay=False), help="Name of the body part to extract"
 )
-def plot_trace(slp_csv_file, body_part, dest_dir):
+def plot_trace(slp_csv_file: str, body_part: str, dest_dir: str):
     """creates linear plot of ycoors to time (ms)
     Returns: all plots ( ycoors vs. time (ms) ) for videos in the Labels, and saves it as video_name+body_part.png
     """
