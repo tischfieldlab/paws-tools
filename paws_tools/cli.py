@@ -57,7 +57,7 @@ def slp_to_paws_csv(
         dest = os.path.join(dest_dir, f"{base}.tsv")
         df.to_csv(dest, sep="\t", index=False)
 
-def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
+def slp_to_paws_csv(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
 
     """Extracts a single point from `labels` and returns as a pandas DataFrame.
 
