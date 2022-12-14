@@ -102,17 +102,18 @@ def slp_to_paws_csv(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None
 
     ycord_list = pd.read_table(slp_csv)
     ycord_list.sort_values(by=["frame_idx"])
+    print(ycord_list[ycord_list["frame_idx"]== 258])
     y_list = ycord_list["y"].tolist()
     fig, ax = plt.subplots(figsize=(16, 10))
 
     time = [x for x in range(len(y_list))]
     ax.plot(time, y_list)
-    ax.set_ylabel("Y axis velocity (mm/ms)")
-    ax.set_xlabel("Time (ms)")
+    ax.set_ylabel(f"{node_name} Y Position")
+    ax.set_xlabel("Frame Index")
 
     video_name = ycord_list["video"][0].split("/")[-1]
     ax.set_title(f"{video_name}_{node_name}_ycord_vs_time(ms)")
     ax.axis(xmin=-10, xmax=len(y_list) + 10)
     fig.tight_layout()
-    ax.legend(["Y coordination"])
+    ax.legend([f"{node_name} Y Position"])
     fig.savefig(f"{dest_dir}/{video_name}_{node_name}_ycord_vs_time(ms).png")

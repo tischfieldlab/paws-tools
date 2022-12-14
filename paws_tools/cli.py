@@ -70,13 +70,13 @@ def slp_to_paws_csv(
 @click.option(
     "--dest-dir", default=os.getcwd(), type=click.Path(file_okay=False), help="Name of the body part to extract"
 )
-def plot_slp_csv(slp_csv_file, node_name, dest_dir):
+def plot_slp_csv(slp_csv_file, body_part, dest_dir):
     """creates linear plot of ycoors to time (ms)
     Returns: all plots ( ycoors vs. time (ms) ) for videos in the Labels, and saves it as video_name+body_part.png
     """
 
     # import ploting function
-    slp_to_paws_csv(slp_csv_file, dest_dir, node_name)
+    slp_to_paws_csv(slp_csv_file, dest_dir, body_part)
 
 
 if __name__ == "__main__":
