@@ -4,7 +4,7 @@ import os
 import click
 import sleap_io
 
-from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe
+from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe, slp_csv_plot
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
 
@@ -88,6 +88,10 @@ def slp_to_paws_csv(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None
     fig.tight_layout()
     ax.legend([f"{node_name} Y Position"])
     fig.savefig(f"{dest_dir}/{video_name}_{node_name}_ycord_vs_time(ms).png")
+
+def plot_trace(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
+
+    slp_csv_plot(slp_csv, dest_dir, node_name)
 
 if __name__ == "__main__":
     cli()
