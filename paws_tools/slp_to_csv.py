@@ -7,8 +7,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-#'Test'
-
 
 def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.DataFrame:
     """Extracts a single point from `labels` and returns as a pandas DataFrame.
@@ -103,19 +101,18 @@ def slp_to_paws_csv(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None
     """
 
     ycord_list = pd.read_table(slp_csv)
-    print(ycord_list)
-    ycord_list.sort_values(by= ["frame_idx"])
+    ycord_list.sort_values(by=["frame_idx"])
     y_list = ycord_list["y"].tolist()
     fig, ax = plt.subplots(figsize=(16, 10))
 
-    time = [ x for x in range(len(y_list)) ]
+    time = [x for x in range(len(y_list))]
     ax.plot(time, y_list)
     ax.set_ylabel("Y axis velocity (mm/ms)")
     ax.set_xlabel("Time (ms)")
 
     video_name = ycord_list["video"][0].split("/")[-1]
     ax.set_title(f"{video_name}_{node_name}_ycord_vs_time(ms)")
-    ax.axis(xmin=-10, xmax=len(y_list)+10)
+    ax.axis(xmin=-10, xmax=len(y_list) + 10)
     fig.tight_layout()
     ax.legend(["Y coordination"])
     fig.savefig(f"{dest_dir}/{video_name}_{node_name}_ycord_vs_time(ms).png")
