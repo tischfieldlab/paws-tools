@@ -102,7 +102,6 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
 
     ycord_list = pd.read_table(slp_csv)
     ycord_list.sort_values(by=["frame_idx"])
-    print(ycord_list[ycord_list["frame_idx"]== 258])
     y_list = ycord_list["y"].tolist()
     fig, ax = plt.subplots(figsize=(16, 10))
 

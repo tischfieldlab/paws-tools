@@ -23,6 +23,7 @@ def cli():
 
 @cli.command(name="slp-to-paws-csv", short_help="Convert SLEAP .slp file to PAWS importable csv files")
 @click.argument("slp_file", type=click.Path(exists=True, dir_okay=False))
+@click.option('--plot/--no-plot', default=True, help="Plot the png for body part trace")
 @click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
 @click.option("--cal-node1", default="Top_Box", help="Name of calibration point one")
 @click.option("--cal-node2", default="Bot_Box", help="Name of calibration point two")
@@ -34,9 +35,8 @@ def cli():
     type=click.Path(file_okay=False),
     help="Directory where resulting TSV files should be saved",
 )
-
 def slp_to_paws_csv(
-    slp_file: str, body_part: str, cal_node1: str, cal_node2: str, cal_dist: float, frame_height: int, dest_dir: str
+    slp_file: str, plot: bool, body_part: str, cal_node1: str, cal_node2: str, cal_dist: float, frame_height: int, dest_dir: str
 ):
     """Given a SLEAP *.slp file, extract the coordinates for the body part specified by \
 --body-part and save a tab-separated-values (TSV) file, for each video in the dataset.
@@ -60,7 +60,8 @@ def slp_to_paws_csv(
         base = os.path.splitext(os.path.basename(group))[0]
         dest = os.path.join(dest_dir, f"{base}.tsv")
         df.to_csv(dest, sep="\t", index=False)
-
+        if plot:
+            slp_csv_plot(dest, dest_dir, body_part)
 
 @cli.command(name="plot-trace", short_help="from csv_slp_file and create linear plot of ycoors to time (ms)")
 @click.argument("slp-csv-file", type=click.Path(exists=True, dir_okay=False))
