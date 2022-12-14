@@ -87,7 +87,7 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
     return labels
 
 
-def slp_to_paws_csv(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
+def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
 
     """Extracts a single point from `labels` and returns as a pandas DataFrame.
 

@@ -6,14 +6,12 @@ import os
 import click
 import sleap_io
 
-
 from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
 
 # Show click option defaults
 click_monkey_patch_option_show_defaults()
-
 
 
 @click.group()
@@ -64,19 +62,19 @@ def slp_to_paws_csv(
         df.to_csv(dest, sep="\t", index=False)
 
 
-@cli.command(name="plot-slp-csv", short_help="from csv_slp_file and create linear plot of ycoors to time (ms)")
-@click.argument("csv_slp_file", type=click.Path(exists=True, dir_okay=False))
+@cli.command(name="plot-trace", short_help="from csv_slp_file and create linear plot of ycoors to time (ms)")
+@click.argument("slp-csv-file", type=click.Path(exists=True, dir_okay=False))
 @click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
 @click.option(
     "--dest-dir", default=os.getcwd(), type=click.Path(file_okay=False), help="Name of the body part to extract"
 )
-def plot_slp_csv(slp_csv_file, body_part, dest_dir):
+def plot_trace(slp_csv_file, body_part, dest_dir):
     """creates linear plot of ycoors to time (ms)
     Returns: all plots ( ycoors vs. time (ms) ) for videos in the Labels, and saves it as video_name+body_part.png
     """
 
     # import ploting function
-    slp_to_paws_csv(slp_csv_file, dest_dir, body_part)
+    slp_csv_plot(slp_csv_file, dest_dir, body_part)
 
 
 if __name__ == "__main__":
