@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 from sleap_io import Labels
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
+
 
 #'Test'
 
@@ -88,37 +89,33 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
     return labels
 
 
-def plot_y_to_time(labels: Labels, ycord_list: list, node_name: str = "Toe") -> None:
+def slp_to_paws_csv(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
 
     """Extracts a single point from `labels` and returns as a pandas DataFrame.
 
     Args:
-        labels: labels from which to extract video data for box_list
-        ycord_list: list of y coordinates from the video
+        slp_csv: csv/tsv file created by slp_to_paws_csv()
         node_name: name of the node for which ycord_list was extracted from
+        file_path: file path for the dest_dir
 
     Returns:
        Saves plot y-coordinates vs. time (ms) line graph as a file png in directory
     """
 
-    file_name = labels.labeled_frames[0].video.filename
-    fig, ax = plt.subplots(figsize=(8, 5))
+    ycord_list = pd.read_table(slp_csv)
+    print(ycord_list)
+    ycord_list.sort_values(by= ["frame_idx"])
+    y_list = ycord_list["y"].tolist()
+    fig, ax = plt.subplots(figsize=(16, 10))
 
-    for y in ycord_list:
-        time = np.linspace(0, 2000, 8000)
-        normtrace = sg(normtrace, 41, 1)
-        start = np.where(-normtrace > 1)[0][0]
-        # 46.83 = true_distance
-        # mm2px = true_distance / abs(np.diff(box_median))
-        plt.plot(time[0 : len(ycord_list) - 1], y)
-        # ax.plot(avg_trials[cell_num,:],'k')
-        plt.ylabel("Y axis velocity (mm/ms)")
-        plt.xlabel("Time (ms)")
+    time = [ x for x in range(len(y_list)) ]
+    ax.plot(time, y_list)
+    ax.set_ylabel("Y axis velocity (mm/ms)")
+    ax.set_xlabel("Time (ms)")
 
-    plt.title(f"{file_name}_{node_name}_ycord_vs_time(ms)")
-    plt.xlim(-30, 400)
+    video_name = ycord_list["video"][0].split("/")[-1]
+    ax.set_title(f"{video_name}_{node_name}_ycord_vs_time(ms)")
+    ax.axis(xmin=-10, xmax=len(y_list)+10)
     fig.tight_layout()
-    plt.legend(["Y coordination"])
-    plt.savefig(f"{file_name}_{node_name}_ycord_vs_time(ms).png")
-    plt.clf()
-    # plt.show()
+    ax.legend(["Y coordination"])
+    fig.savefig(f"{dest_dir}/{video_name}_{node_name}_ycord_vs_time(ms).png")

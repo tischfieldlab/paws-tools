@@ -6,12 +6,14 @@ import os
 import click
 import sleap_io
 
+
 from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
 
 # Show click option defaults
 click_monkey_patch_option_show_defaults()
+
 
 
 @click.group()
@@ -34,11 +36,13 @@ def cli():
     type=click.Path(file_okay=False),
     help="Directory where resulting TSV files should be saved",
 )
+
 def slp_to_paws_csv(
     slp_file: str, body_part: str, cal_node1: str, cal_node2: str, cal_dist: float, frame_height: int, dest_dir: str
 ):
     """Given a SLEAP *.slp file, extract the coordinates for the body part specified by \
 --body-part and save a tab-separated-values (TSV) file, for each video in the dataset.
+
 
     Additionally, this command will convert from pixel units to physical units given proper
     calibration information. See options --cal-*.
@@ -58,6 +62,21 @@ def slp_to_paws_csv(
         base = os.path.splitext(os.path.basename(group))[0]
         dest = os.path.join(dest_dir, f"{base}.tsv")
         df.to_csv(dest, sep="\t", index=False)
+
+
+@cli.command(name="plot-slp-csv", short_help="from csv_slp_file and create linear plot of ycoors to time (ms)")
+@click.argument("csv_slp_file", type=click.Path(exists=True, dir_okay=False))
+@click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
+@click.option(
+    "--dest-dir", default=os.getcwd(), type=click.Path(file_okay=False), help="Name of the body part to extract"
+)
+def plot_slp_csv(slp_csv_file, node_name, dest_dir):
+    """creates linear plot of ycoors to time (ms)
+    Returns: all plots ( ycoors vs. time (ms) ) for videos in the Labels, and saves it as video_name+body_part.png
+    """
+
+    # import ploting function
+    slp_to_paws_csv(slp_csv_file, dest_dir, node_name)
 
 
 if __name__ == "__main__":
