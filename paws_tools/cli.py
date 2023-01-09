@@ -71,9 +71,9 @@ cli.command(name="slp-to-paws-csv", short_help="Convert SLEAP .slp file to PAWS 
     type=click.Path(file_okay=False),
     help="Directory where resulting TSV files should be saved",
 )
-def plot_trace(slp_csv: str, body_part: str, dest_dir: str):
+def plot_trace(slp_csv: str, dest_dir: str, body_part: str):
 
-    slp_csv_plot(slp_csv, body_part, dest_dir)
+    slp_csv_plot(slp_csv, dest_dir, body_part)
 
 
 if __name__ == "__main__":
