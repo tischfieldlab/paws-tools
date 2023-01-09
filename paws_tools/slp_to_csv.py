@@ -95,7 +95,6 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
     Returns:
        Saves plot y-coordinates vs. time (ms) line graph as a file png in directory
     """
-
     ycord_list = pd.read_table(slp_csv)
     print(ycord_list)
     ycord_list.sort_values(by=["frame_idx"])

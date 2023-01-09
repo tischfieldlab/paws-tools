@@ -60,7 +60,7 @@ def slp_to_paws_csv(
         df.to_csv(dest, sep="\t", index=False)
 
 
-cli.command(name="slp-to-paws-csv", short_help="Convert SLEAP .slp file to PAWS importable csv files")
+cli.command(name="slp-to-paws-plot", short_help="Plot slp_csv file to trace graph png file")
 
 
 @click.argument("slp_csv", type=click.Path(exists=True, dir_okay=False))
@@ -72,6 +72,9 @@ cli.command(name="slp-to-paws-csv", short_help="Convert SLEAP .slp file to PAWS 
     help="Directory where resulting TSV files should be saved",
 )
 def plot_trace(slp_csv: str, dest_dir: str, body_part: str):
+    """Given a str slp_csv file name and destination directionry filename (dest_dir), and\
+--body-part and save a png file of trace graph from slp_csv file to destination directory.
+    """
 
     slp_csv_plot(slp_csv, dest_dir, body_part)
 
