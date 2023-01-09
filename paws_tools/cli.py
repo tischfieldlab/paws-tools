@@ -61,6 +61,8 @@ def slp_to_paws_csv(
 
 
 cli.command(name="slp-to-paws-csv", short_help="Convert SLEAP .slp file to PAWS importable csv files")
+
+
 @click.argument("slp_csv", type=click.Path(exists=True, dir_okay=False))
 @click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
 @click.option(
@@ -72,6 +74,7 @@ cli.command(name="slp-to-paws-csv", short_help="Convert SLEAP .slp file to PAWS 
 def plot_trace(slp_csv: str, body_part: str, dest_dir: str):
 
     slp_csv_plot(slp_csv, body_part, dest_dir)
+
 
 if __name__ == "__main__":
     cli()
