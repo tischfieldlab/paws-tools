@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sleap_io import Labels
 
 
@@ -100,7 +101,7 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
     ycord_list.sort_values(by=["frame_idx"])
     print(ycord_list[ycord_list["frame_idx"] == 258])
     y_list = ycord_list["y"].tolist()
-    fig, ax = ax.subplots(figsize=(16, 10))
+    fig, ax = plt.subplots(figsize=(16, 10))
 
     time = [x for x in range(len(y_list))]
     ax.plot(time, y_list)
