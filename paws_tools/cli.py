@@ -72,10 +72,9 @@ cli.command(name="slp-to-paws-plot", short_help="Plot slp_csv file to trace grap
     help="Directory where resulting TSV files should be saved",
 )
 def plot_trace(slp_csv: str, dest_dir: str, body_part: str):
-    """Given a str slp_csv file name and destination directionry filename (dest_dir), and\
+    """Given a str slp_csv file name and destination directionry filename (dest_dir), and \
 --body-part and save a png file of trace graph from slp_csv file to destination directory.
     """
-
     slp_csv_plot(slp_csv, dest_dir, body_part)
 
 
