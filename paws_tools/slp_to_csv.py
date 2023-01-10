@@ -6,14 +6,15 @@ from sleap_io import Labels
 
 
 def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.DataFrame:
-    """Extracts a single point from `labels` and returns as a pandas DataFrame.
+    """Extracts a single node from `labels` and returns its coordinates as a pandas DataFrame.
 
     Args:
         labels: labels from which to extract data
         node_name: name of the node for which to extract data
 
     Returns:
-       pandas DataFrame containing node locations, frame index, and video data
+       pandas DataFrame containing node coordinates, frame index, and video data. The returned dataframe
+       is sorted by video filename and then by frame index, each in ascending order.
     """
     data = []
     node = labels.skeletons[0][node_name]
@@ -27,7 +28,10 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
             }
         )
 
-    return pd.DataFrame(data)
+    df = pd.DataFrame(data)  # convert to pandas dataframe
+    df = df.sort_values(["video", "frame_idx"])  # ensure data is sorted by video name, then by frame_idx
+
+    return df
 
 
 def invert_y_axis(labels: Labels, frame_height: int) -> Labels:
