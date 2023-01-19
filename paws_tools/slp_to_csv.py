@@ -86,8 +86,9 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
 
 
 def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
-    """Extracts a single point from `labels` and returns as a pandas DataFrame. \
-        Saves plot y-coordinates vs. time line graph as a file png in directory.
+    """Extracts a single point from `labels` and returns as a pandas DataFrame.
+
+    Saves plot y-coordinates vs. time line graph as a file png in directory.
 
     Args:
         slp_csv: csv/tsv file created by slp_to_paws_csv()
