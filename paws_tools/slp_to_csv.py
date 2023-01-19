@@ -96,7 +96,7 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
         node_name: name of the body part node for which ycord_list was extracted from
     """
     ycord_list = pd.read_table(slp_csv)
-    ycord_list.sort_values(by=["x"])
+    ycord_list.sort_values(by=["y"])
     y_list = ycord_list["y"].tolist()
     fig, ax = plt.subplots(figsize=(20, 10))
 
