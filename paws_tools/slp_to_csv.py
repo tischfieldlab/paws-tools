@@ -96,7 +96,7 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
         node_name: name of the body part node for which ycord_list was extracted from
     """
     ycord_list = pd.read_table(slp_csv)
-    ycord_list.sort_values(by=["y"])
+    ycord_list.sort_values(by=["x"])
     y_list = ycord_list["y"].tolist()
     fig, ax = plt.subplots(figsize=(20, 10))
 
@@ -106,7 +106,7 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
     ax.set_xlabel("Frame Index")
     ax.set_xticks(np.arange(0, len(time)+1, 100))
 
-    video_name = ycord_list["video"][0].split("/")[-1]
+    video_name = slp_csv.split("/")[-1]
     ax.set_title(f"{video_name}_{node_name}_ycord_vs_time")
     ax.axis(xmin=-10, xmax=len(y_list) + 10)
     fig.tight_layout()
