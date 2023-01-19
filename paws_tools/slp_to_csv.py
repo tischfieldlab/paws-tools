@@ -86,27 +86,24 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
 
 
 def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
-    """Extracts a single point from `labels` and returns as a pandas DataFrame.
+    """Extracts a single point from `labels` and returns as a pandas DataFrame. \
+        Saves plot y-coordinates vs. time (ms) line graph as a file png in directory
 
     Args:
         slp_csv: csv/tsv file created by slp_to_paws_csv()
         node_name: name of the node for which ycord_list was extracted from
         file_path: file path for the dest_dir
-
-    Returns:
-       Saves plot y-coordinates vs. time (ms) line graph as a file png in directory
     """
     ycord_list = pd.read_table(slp_csv)
-    print(ycord_list)
     ycord_list.sort_values(by=["frame_idx"])
-    print(ycord_list[ycord_list["frame_idx"] == 258])
     y_list = ycord_list["y"].tolist()
-    fig, ax = plt.subplots(figsize=(16, 10))
+    fig, ax = plt.subplots(figsize=(20, 10))
 
     time = [x for x in range(len(y_list))]
     ax.plot(time, y_list)
     ax.set_ylabel(f"{node_name} Y Position")
     ax.set_xlabel("Frame Index")
+    ax.xticks(np.arange(0, len(time), 100))
 
     video_name = ycord_list["video"][0].split("/")[-1]
     ax.set_title(f"{video_name}_{node_name}_ycord_vs_time(ms)")
