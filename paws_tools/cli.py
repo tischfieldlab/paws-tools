@@ -60,7 +60,7 @@ def slp_to_paws_csv(
         df.to_csv(dest, sep="\t", index=False)
 
 
-@cli.command(name="slp-to-paws-plot", short_help="Plot slp_csv file to trace graph png file")
+@cli.command(name="slp-to-paws-plot-trace", short_help="Plot slp_csv file to trace graph png file")
 @click.argument("slp_csv", type=click.Path(exists=True, dir_okay=False))
 @click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
 @click.option(
