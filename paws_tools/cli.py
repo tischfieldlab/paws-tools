@@ -72,7 +72,7 @@ def slp_to_paws_csv(
 def plot_trace(slp_csv: str, dest_dir: str, body_part: str):
     """Given a str slp_csv file name and destination directionry filename (dest_dir), and spicified by body-part -bp.
 
-    Save a png file named f"{video_name}_{body_part}_ycord_vs_time.png" of trace graph from slp_csv file and saved to destination directory.
+    Save a png file named f"{video_name}_{body_part}_ycord_vs_time.png" trace graph and saved to destination directory.
     """
     slp_csv_plot(slp_csv, dest_dir, body_part)
 
