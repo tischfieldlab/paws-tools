@@ -104,8 +104,8 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
     ax.plot(time, y_list)
     ax.set_ylabel(f"{node_name} Y Position")
     ax.set_xlabel("Frame Index")
-    ax.set_xticks(np.arange(0, len(time)+1, 50))
-    ax.set_xticklabels(np.arange(0, len(time)+1, 50), rotation=90)
+    ax.set_xticks(np.arange(0, len(time) + 1, 50))
+    ax.set_xticklabels(np.arange(0, len(time) + 1, 50), rotation=90)
 
     video_name = slp_csv.split("/")[-1]
     ax.set_title(f"{video_name}_{node_name}_ycord_vs_time")
