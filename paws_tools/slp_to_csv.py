@@ -87,7 +87,7 @@ def convert_physical_units(labels: Labels, top_node: str, bot_node: str, true_di
 
 def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
     """Extracts a single point from `labels` and returns as a pandas DataFrame. \
-        Saves plot y-coordinates vs. time (ms) line graph as a file png in directory.
+        Saves plot y-coordinates vs. time line graph as a file png in directory.
 
     Args:
         slp_csv: csv/tsv file created by slp_to_paws_csv()
@@ -106,8 +106,8 @@ def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
     ax.xticks(np.arange(0, len(time), 100))
 
     video_name = ycord_list["video"][0].split("/")[-1]
-    ax.set_title(f"{video_name}_{node_name}_ycord_vs_time(ms)")
+    ax.set_title(f"{video_name}_{node_name}_ycord_vs_time")
     ax.axis(xmin=-10, xmax=len(y_list) + 10)
     fig.tight_layout()
     ax.legend([f"{node_name} Y Position"])
-    fig.savefig(f"{dest_dir}/{video_name}_{node_name}_ycord_vs_time(ms).png")
+    fig.savefig(f"{dest_dir}/{video_name}_{node_name}_ycord_vs_time.png")
