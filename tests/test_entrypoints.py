@@ -16,12 +16,12 @@ def command_tree(obj):
         return {name: command_tree(value) for name, value in obj.commands.items()}
 
 
-def collect_commands(group: click.Group):
+def collect_commands(group: click.Group) -> List[str]:
     return list(command_tree(group).keys())
 
 
 def collect_modules(root: str) -> List[str]:
-    pkg_path = Path(__file__).resolve().parent.parent.joinpath(root)
+    pkg_path = str(Path(__file__).resolve().parent.parent.joinpath(root))
     modules_to_test = pkgutil.iter_modules([pkg_path], prefix=f"{root}.")
     module_names = [m.name for m in modules_to_test]
     return module_names
