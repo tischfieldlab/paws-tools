@@ -1,12 +1,20 @@
 """CLI entry-point for paws-tools."""
 
 
+import copy
 import os
+from typing import List, Literal
 
 import click
 import sleap_io
 
-from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe
+from paws_tools.slp_to_csv import (
+    convert_physical_units,
+    get_nodes_for_bodyparts,
+    invert_y_axis,
+    node_positions_to_dataframe,
+    save_dataframe_to_grouped_csv,
+)
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
 
@@ -21,43 +29,84 @@ def cli():
     pass  # pylint: disable=unnecessary-pass
 
 
-@cli.command(name="slp-to-paws-csv", short_help="Convert SLEAP .slp file to PAWS importable csv files")
+@cli.command(name="slp-to-csv", short_help="Convert SLEAP .slp file to PAWS importable csv files")
 @click.argument("slp_file", type=click.Path(exists=True, dir_okay=False))
-@click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
+@click.option(
+    "-bp",
+    "--body-part",
+    default=["Toe"],
+    multiple=True,
+    help="Name of the body part(s) to extract. Also accepts special value 'all', which will select all bodyparts.",
+)
+@click.option(
+    "-ibp",
+    "--ignore-body-part",
+    multiple=True,
+    help="Name of body part(s) to ignore. These will be subtracted from the set specified by --body-part.",
+)
+@click.option("--calibrate/--no-calibrate", default=True, help="Perform calibration to physical units")
 @click.option("--cal-node1", default="Top_Box", help="Name of calibration point one")
 @click.option("--cal-node2", default="Bot_Box", help="Name of calibration point two")
 @click.option("--cal-dist", default=1.0, type=float, help="Physical distance between --cal-node1 and --cal-node2")
-@click.option("--frame-height", default=512, type=int, help="Pixel height of video frames")
+@click.option("--frame-height", default=512, type=int, help="Pixel height of video frames, used to invert the y-axis")
+@click.option(
+    "--format",
+    type=click.Choice(["tsv", "csv"]),
+    default="tsv",
+    help="Format of the resulting files: 'tsv' gives tab-separated values, 'csv' gives comma-separated values",
+)
 @click.option(
     "--dest-dir",
     default=os.getcwd(),
     type=click.Path(file_okay=False),
-    help="Directory where resulting TSV files should be saved",
+    help="Directory where resulting files should be saved",
 )
-def slp_to_paws_csv(
-    slp_file: str, body_part: str, cal_node1: str, cal_node2: str, cal_dist: float, frame_height: int, dest_dir: str
+def slp_to_csv(
+    slp_file: str,
+    body_part: List[str],
+    ignore_body_part: List[str],
+    calibrate: bool,
+    cal_node1: str,
+    cal_node2: str,
+    cal_dist: float,
+    frame_height: int,
+    format: Literal["tsv", "csv"],
+    dest_dir: str,
 ):
-    """Given a SLEAP *.slp file, extract the coordinates for the body part specified by \
---body-part and save a tab-separated-values (TSV) file, for each video in the dataset.
+    """Given a SLEAP *.slp file, extract the coordinates for the body-part(s) specified by \
+--body-part and then, for each video in the dataset, save a delimiter-separated-values (TSV/CSV) file.
+
+    Add body-parts to be extracted through the -bp or --body-part options. This also accepts a special
+    value, 'all', which will use all body-parts found in the slp file. Body-parts can be removed from the
+    final set through the use of -ibp or --ignore-body-part.
 
     Additionally, this command will convert from pixel units to physical units given proper
-    calibration information. See options --cal-*.
+    calibration information. See options --cal-*. Use --calibrate (default) to turn on calibration
+    or --no-calibrate to turn off calibration. If calibration is turned on, both pixel-unit and physical-unit
+    variants of the data will be saved, otherwise only pixel-unit data will be saved.
+
+    Use --format to specify the format of the resulting data. 'tsv' for tab-separated values,
+    or 'csv' for comma-separated values.
 
     The y-axis may also be inverted given --frame-height.
     """
+    # parse the provided *.slp file
     labels = sleap_io.load_slp(slp_file)
+
+    # get the nodes to operate upon
+    nodes = get_nodes_for_bodyparts(labels, body_part)
+    ignore_nodes = get_nodes_for_bodyparts(labels, ignore_body_part)
+    nodes = list(set(nodes) - set(ignore_nodes))  # subtract any nodes the user wanted to ignore
 
     # convert labels coords to physical units
     labels = invert_y_axis(labels, frame_height)
-    labels = convert_physical_units(labels, cal_node1, cal_node2, cal_dist)
-    coords = node_positions_to_dataframe(labels, body_part)
+    coords = node_positions_to_dataframe(labels, nodes)
+    save_dataframe_to_grouped_csv(coords, "video", dest_dir, "px", format=format)
 
-    # for each video, save the dataframe subset to a TSV file
-    os.makedirs(dest_dir, exist_ok=True)
-    for group, df in coords.groupby("video"):
-        base = os.path.splitext(os.path.basename(group))[0]
-        dest = os.path.join(dest_dir, f"{base}.tsv")
-        df.to_csv(dest, sep="\t", index=False)
+    if calibrate:
+        labels = convert_physical_units(copy.deepcopy(labels), cal_node1, cal_node2, cal_dist)
+        coords = node_positions_to_dataframe(labels, nodes)
+        save_dataframe_to_grouped_csv(coords, "video", dest_dir, "mm", format=format)
 
 
 if __name__ == "__main__":
