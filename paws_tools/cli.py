@@ -38,7 +38,7 @@ def slp_to_paws_csv(
     slp_file: str, body_part: str, cal_node1: str, cal_node2: str, cal_dist: float, frame_height: int, dest_dir: str
 ):
     """Given a SLEAP *.slp file, extract the coordinates for the body part specified by \
---body-part and save a tab-separated-values (TSV) file, for each video in the dataset.
+--body-part, save a tab-separated-values (TSV) file, for each video in the dataset and generate trace plot.
 
     Additionally, this command will convert from pixel units to physical units given proper
     calibration information. See options --cal-*.
@@ -58,6 +58,8 @@ def slp_to_paws_csv(
         base = os.path.splitext(os.path.basename(group))[0]
         dest = os.path.join(dest_dir, f"{base}.tsv")
         df.to_csv(dest, sep="\t", index=False)
+
+    slp_csv_plot(dest, dest_dir, body_part)
 
 
 @cli.command(name="slp-to-paws-plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
