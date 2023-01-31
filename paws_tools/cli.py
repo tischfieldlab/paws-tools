@@ -14,6 +14,7 @@ from paws_tools.slp_to_csv import (
     invert_y_axis,
     node_positions_to_dataframe,
     save_dataframe_to_grouped_csv,
+    slp_csv_plot,
 )
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
@@ -74,7 +75,7 @@ def slp_to_csv(
     dest_dir: str,
 ):
     """Given a SLEAP *.slp file, extract the coordinates for the body-part(s) specified by \
---body-part and then, for each video in the dataset, save a delimiter-separated-values (TSV/CSV) file.
+--body-part and then, for each video in the dataset, save a delimiter-separated-values (TSV/CSV) file, and generate trace plot.
 
     Add body-parts to be extracted through the -bp or --body-part options. This also accepts a special
     value, 'all', which will use all body-parts found in the slp file. Body-parts can be removed from the
@@ -107,6 +108,25 @@ def slp_to_csv(
         labels = convert_physical_units(copy.deepcopy(labels), cal_node1, cal_node2, cal_dist)
         coords = node_positions_to_dataframe(labels, nodes)
         save_dataframe_to_grouped_csv(coords, "video", dest_dir, "mm", format=format)
+
+    slp_csv_plot(dest, dest_dir, body_part)
+
+
+@cli.command(name="slp-to-paws-plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
+@click.argument("slp_csv", type=click.Path(exists=True, dir_okay=False))
+@click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
+@click.option(
+    "--dest-dir",
+    default=os.getcwd(),
+    type=click.Path(file_okay=False),
+    help="Directory where resulting TSV files should be saved",
+)
+def plot_trace(slp_csv: str, dest_dir: str, body_part: str):
+    """Given a str slp_csv file name and destination directionry filename (dest_dir), and spicified by body-part -bp.
+
+    Save a png file named f"{video_name}_{body_part}_ycord_vs_time.png" trace graph and saved to destination directory.
+    """
+    slp_csv_plot(slp_csv, dest_dir, body_part)
 
 
 if __name__ == "__main__":
