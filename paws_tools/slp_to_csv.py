@@ -80,6 +80,25 @@ def node_positions_to_dataframe(labels: Labels, nodes: List[Node]) -> pd.DataFra
     return df
 
 
+def read_dataframe_from_csv(filename: str) -> pd.DataFrame:
+    """Read a csv file and convert to a dataframe.
+
+    Handles automatically detecting the delimiter type (tab for TSV files or comma for CSV)
+    Handles correctly constructing the multi-index
+
+    Args:
+        filename: path to the file to read
+
+    Returns:
+        `pandas.DataFrame` containing data read from the csv file
+    """
+    kwargs = {}
+    if filename.lower().endswith("tsv"):
+        kwargs["sep"] = "\t"
+
+    return pd.read_csv(filename, index_col=[0, 1], header=[0, 1], **kwargs)
+
+
 def save_dataframe_to_grouped_csv(
     df: pd.DataFrame, groupby: str, dest_dir: str, suffix: Optional[str] = None, format: Literal["tsv", "csv"] = "tsv"
 ):
