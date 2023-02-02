@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sleap_io import Labels, Node
+from tqdm import tqdm
 
 
 def get_nodes_for_bodyparts(labels: Labels, body_parts: Union[str, Node, List[Union[str, Node]]]) -> List[Node]:
@@ -61,7 +62,7 @@ def node_positions_to_dataframe(labels: Labels, nodes: List[Node]) -> pd.DataFra
        is sorted by video filename and then by frame index, each in ascending order.
     """
     data = []
-    for frame in labels.labeled_frames:
+    for frame in tqdm(labels.labeled_frames, desc="Building Dataframe", leave=False):
         row: Dict[Union[str, Tuple[str, str]], Any] = {
             "video": frame.video.filename,
             "frame_idx": frame.frame_idx,
@@ -103,7 +104,7 @@ def save_dataframe_to_grouped_csv(
         to_csv_kwargs["sep"] = "\t"
 
     # group by `groupby`, then save each group to a separate file
-    for group, group_df in df.groupby(groupby):
+    for group, group_df in tqdm(df.groupby(groupby), desc=f"Saving {format.upper()} Files", leave=False):
         base = os.path.splitext(os.path.basename(group))[0]
         dest = os.path.join(dest_dir, f"{base}.{full_suffix}")
         group_df.to_csv(dest, **to_csv_kwargs)
@@ -122,7 +123,7 @@ def invert_y_axis(labels: Labels, frame_height: int) -> Labels:
     Returns:
         Labels instance with point units converted to physical distances
     """
-    for frame in labels.labeled_frames:
+    for frame in tqdm(labels.labeled_frames, desc="Inverting Y-axis", leave=False):
         for instance in frame.predicted_instances:
             for key, val in instance.points.items():
                 instance.points[key].y = frame_height - val.y
@@ -146,14 +147,14 @@ def convert_physical_units(labels: Labels, top_node: Union[str, Node], bot_node:
     Bot_index = labels.skeletons[0].index(bot_node)
 
     conv_factors = {}
-    for video in labels.videos:
+    for video in tqdm(labels.videos, desc="Calculating Conversion Factors", leave=False):
         box_cords = labels.numpy(video)[:, 0, (Top_index, Bot_index), 1]
 
         box_median = np.nanmedian(box_cords, axis=0)
         mm2px = true_dist / abs(np.diff(box_median))
         conv_factors[video.filename] = mm2px[0]
 
-    for frame in labels.labeled_frames:
+    for frame in tqdm(labels.labeled_frames, desc="Applying Conversion Factors", leave=False):
         mm2px = conv_factors[frame.video.filename]
         for instance in frame.predicted_instances:
             for key, val in instance.points.items():
