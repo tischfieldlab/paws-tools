@@ -101,7 +101,7 @@ def read_dataframe_from_csv(filename: str) -> pd.DataFrame:
 
 def save_dataframe_to_grouped_csv(
     df: pd.DataFrame, groupby: str, dest_dir: str, suffix: Optional[str] = None, format: Literal["tsv", "csv"] = "tsv"
-):
+) -> List[str]:
     """Split a dataframe into groups, and then save each group as a separate file.
 
     Args:
@@ -110,6 +110,9 @@ def save_dataframe_to_grouped_csv(
         dest_dir: destination directory for the produced files
         suffix: any suffix to add to the resulting filenames, just prior to the file extension
         format: format for the saved files, 'tsv' indicates tab-separated values, 'csv' indicated comma-separated values
+
+    Returns:
+        A list of strings indicating the filepaths which were saved to
     """
     # ensure destination directory exists
     os.makedirs(dest_dir, exist_ok=True)
@@ -123,10 +126,14 @@ def save_dataframe_to_grouped_csv(
         to_csv_kwargs["sep"] = "\t"
 
     # group by `groupby`, then save each group to a separate file
+    out_filenames = []
     for group, group_df in tqdm(df.groupby(groupby), desc=f"Saving {format.upper()} Files", leave=False):
         base = os.path.splitext(os.path.basename(group))[0]
         dest = os.path.join(dest_dir, f"{base}.{full_suffix}")
+        out_filenames.append(dest)
         group_df.to_csv(dest, **to_csv_kwargs)
+
+    return out_filenames
 
 
 def invert_y_axis(labels: Labels, frame_height: int) -> Labels:
