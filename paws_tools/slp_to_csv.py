@@ -176,18 +176,23 @@ def convert_physical_units(labels: Labels, top_node: Union[str, Node], bot_node:
 
     conv_factors = {}
     for video in tqdm(labels.videos, desc="Calculating Conversion Factors", leave=False):
-        box_cords = labels.numpy(video)[:, 0, (Top_index, Bot_index), 1]
+        try:
+            box_cords = labels.numpy(video)[:, 0, (Top_index, Bot_index), 1]
+            box_median = np.nanmedian(box_cords, axis=0)
+            mm2px = true_dist / abs(np.diff(box_median))
+            conv_factors[video.filename] = mm2px[0]
 
-        box_median = np.nanmedian(box_cords, axis=0)
-        mm2px = true_dist / abs(np.diff(box_median))
-        conv_factors[video.filename] = mm2px[0]
+        except:
+            print("WARNING: Unable to find coordinates for calibration nodes! Skipping calibration for video {video}")
+            conv_factors[video.filename] = None
 
     for frame in tqdm(labels.labeled_frames, desc="Applying Conversion Factors", leave=False):
         mm2px = conv_factors[frame.video.filename]
-        for instance in frame.predicted_instances:
-            for key, val in instance.points.items():
-                instance.points[key].x = val.x * mm2px
-                instance.points[key].y = val.y * mm2px
+        if mm2px is not None:
+            for instance in frame.predicted_instances:
+                for key, val in instance.points.items():
+                    instance.points[key].x = val.x * mm2px
+                    instance.points[key].y = val.y * mm2px
 
     return labels
 
@@ -210,7 +215,7 @@ def plot_bodyparts_y_pos_over_time(df: Union[pd.DataFrame, str], dest_dir: str, 
     str_nodes = [node.name if isinstance(node, Node) else node for node in nodes]
 
     if ax is None:
-    fig, ax = plt.subplots(figsize=(20, 10))
+        fig, ax = plt.subplots(figsize=(20, 10))
         own_fig = True
     else:
         fig = ax.get_figure()
