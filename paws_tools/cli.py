@@ -125,21 +125,21 @@ def slp_to_csv(
                 plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes)
 
 
-@cli.command(name="slp-to-paws-plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
+@cli.command(name="plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
 @click.argument("slp_csv", type=click.Path(exists=True, dir_okay=False))
-@click.option("-bp", "--body-part", default="Toe", help="Name of the body part to extract")
+@click.option("-bp", "--body-part", default=["Toe"], multiple=True, help="Name of the bodypart(s) to extract")
 @click.option(
     "--dest-dir",
     default=os.getcwd(),
     type=click.Path(file_okay=False),
-    help="Directory where resulting TSV files should be saved",
+    help="Directory where resulting plots should be saved",
 )
-def plot_trace(slp_csv: str, dest_dir: str, body_part: str):
+def plot_trace(slp_csv: str, dest_dir: str, body_part: List[str]):
     """Given a str slp_csv file name and destination directionry filename (dest_dir), and spicified by body-part -bp.
 
     Save a png file named f"{video_name}_{body_part}_ycord_vs_time.png" trace graph and saved to destination directory.
     """
-    plot_bodyparts_y_pos_over_time(slp_csv, dest_dir, [body_part])
+    plot_bodyparts_y_pos_over_time(slp_csv, dest_dir, body_part)
 
 
 if __name__ == "__main__":
