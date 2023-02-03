@@ -109,20 +109,20 @@ def slp_to_csv(
     # convert labels coords to physical units
     labels = invert_y_axis(labels, frame_height)
     coords = node_positions_to_dataframe(labels, nodes)
-    csv_files = save_dataframe_to_grouped_csv(coords, "video", dest_dir, "px", format=format)
+    csv_files = save_dataframe_to_grouped_csv(coords, "video", dest_dir, suffix="px", format=format)
 
     if plot:
         for csv_file in tqdm(csv_files, desc="Generating Plots (non-calibrated)", leave=False):
-            plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes)
+            plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes, suffix="px")
 
     if calibrate:
         labels = convert_physical_units(copy.deepcopy(labels), cal_node1, cal_node2, cal_dist)
         coords = node_positions_to_dataframe(labels, nodes)
-        csv_files = save_dataframe_to_grouped_csv(coords, "video", dest_dir, "mm", format=format)
+        csv_files = save_dataframe_to_grouped_csv(coords, "video", dest_dir, suffix="mm", format=format)
 
         if plot:
             for csv_file in tqdm(csv_files, desc="Generating Plots (non-calibrated)", leave=False):
-                plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes)
+                plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes, suffix="mm")
 
 
 @cli.command(name="plot-trace", short_help="Plot slp_csv file to body part trace graph png file")

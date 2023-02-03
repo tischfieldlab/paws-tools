@@ -197,7 +197,14 @@ def convert_physical_units(labels: Labels, top_node: Union[str, Node], bot_node:
     return labels
 
 
-def plot_bodyparts_y_pos_over_time(df: Union[pd.DataFrame, str], dest_dir: str, nodes: List[Union[Node, str]], ax: Axes = None) -> None:
+def plot_bodyparts_y_pos_over_time(
+    df: Union[pd.DataFrame, str],
+    dest_dir: str,
+    nodes: List[Union[Node, str]],
+    ax: Axes = None,
+    suffix: Optional[str] = None,
+    format: str = "png",
+) -> None:
     """Extracts a single point from `labels` and returns as a pandas DataFrame.
 
     Saves plot y-coordinates vs. time line graph as a file png in directory.
@@ -207,6 +214,8 @@ def plot_bodyparts_y_pos_over_time(df: Union[pd.DataFrame, str], dest_dir: str, 
         dest_dir: file path for the destination directory
         nodes: bodyparts for which to plot
         ax: Axes to plot on, if not provided, one will be created
+        suffix: any suffix to add to the resulting filenames, just prior to the file extension
+        format: format for the saved plots, 'png' is the default
     """
     if isinstance(df, str):
         df = read_dataframe_from_csv(df)
@@ -241,6 +250,13 @@ def plot_bodyparts_y_pos_over_time(df: Union[pd.DataFrame, str], dest_dir: str, 
     ax.axis(xmin=-10, xmax=max_x + 10)
 
     fig.tight_layout()
-    fig.savefig(os.path.join(dest_dir, f"{video_name}_[{node_names}]_ycord_vs_time.png"))
+
+    # ensure destination directory exists
+    os.makedirs(dest_dir, exist_ok=True)
+
+    # generate the full suffix, including file extension
+    full_suffix = f"{suffix}.{format}" if suffix is not None else format
+    dest = os.path.join(dest_dir, f"{video_name}_[{node_names}]_ycord_vs_time.{full_suffix}")
+    fig.savefig(dest)
     if own_fig:
         plt.close(fig)
