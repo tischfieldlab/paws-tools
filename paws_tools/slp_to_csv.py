@@ -183,7 +183,7 @@ def convert_physical_units(labels: Labels, top_node: Union[str, Node], bot_node:
             conv_factors[video.filename] = mm2px[0]
 
         except:
-            tqdm.write("WARNING: Unable to find coordinates for calibration nodes! Skipping calibration for video {video}")
+            tqdm.write(f"WARNING: Unable to find coordinates for calibration nodes! Skipping calibration for video \"{video.filename}\"")
             conv_factors[video.filename] = None
 
     for frame in tqdm(labels.labeled_frames, desc="Applying Conversion Factors", leave=False):
