@@ -7,6 +7,7 @@ from typing import List, Literal
 
 import click
 import sleap_io
+from tqdm import tqdm
 
 from paws_tools.slp_to_csv import (
     convert_physical_units,
@@ -14,7 +15,7 @@ from paws_tools.slp_to_csv import (
     invert_y_axis,
     node_positions_to_dataframe,
     save_dataframe_to_grouped_csv,
-    slp_csv_plot,
+    plot_bodyparts_y_pos_over_time,
 )
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
@@ -62,6 +63,7 @@ def cli():
     type=click.Path(file_okay=False),
     help="Directory where resulting files should be saved",
 )
+@click.option("--plot/--no-plot", default=True, help="Plot traces of the bodyparts")
 def slp_to_csv(
     slp_file: str,
     body_part: List[str],
@@ -73,6 +75,7 @@ def slp_to_csv(
     frame_height: int,
     format: Literal["tsv", "csv"],
     dest_dir: str,
+    plot: bool,
 ):
     """Given a SLEAP *.slp file, extract the coordinates for the body-part(s) specified by \
 --body-part and then, for each video in the dataset, save a delimiter-separated-values (TSV/CSV) file, and generate trace plot.
@@ -102,14 +105,20 @@ def slp_to_csv(
     # convert labels coords to physical units
     labels = invert_y_axis(labels, frame_height)
     coords = node_positions_to_dataframe(labels, nodes)
-    save_dataframe_to_grouped_csv(coords, "video", dest_dir, "px", format=format)
+    csv_files = save_dataframe_to_grouped_csv(coords, "video", dest_dir, "px", format=format)
+
+    if plot:
+        for csv_file in tqdm(csv_files, desc="Generating Plots (non-calibrated)", leave=False):
+            plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes)
 
     if calibrate:
         labels = convert_physical_units(copy.deepcopy(labels), cal_node1, cal_node2, cal_dist)
         coords = node_positions_to_dataframe(labels, nodes)
-        save_dataframe_to_grouped_csv(coords, "video", dest_dir, "mm", format=format)
+        csv_files = save_dataframe_to_grouped_csv(coords, "video", dest_dir, "mm", format=format)
 
-    slp_csv_plot(dest, dest_dir, body_part)
+        if plot:
+            for csv_file in tqdm(csv_files, desc="Generating Plots (non-calibrated)", leave=False):
+                plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes)
 
 
 @cli.command(name="slp-to-paws-plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
@@ -126,7 +135,7 @@ def plot_trace(slp_csv: str, dest_dir: str, body_part: str):
 
     Save a png file named f"{video_name}_{body_part}_ycord_vs_time.png" trace graph and saved to destination directory.
     """
-    slp_csv_plot(slp_csv, dest_dir, body_part)
+    plot_bodyparts_y_pos_over_time(slp_csv, dest_dir, [body_part])
 
 
 if __name__ == "__main__":

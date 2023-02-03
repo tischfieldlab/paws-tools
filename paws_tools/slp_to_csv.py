@@ -2,10 +2,12 @@
 
 import os
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
+from matplotlib.axes import Axes
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sleap_io import Labels, Node
+import seaborn as sns
 from tqdm import tqdm
 
 
@@ -190,31 +192,50 @@ def convert_physical_units(labels: Labels, top_node: Union[str, Node], bot_node:
     return labels
 
 
-def slp_csv_plot(slp_csv: str, dest_dir: str, node_name: str = "Toe") -> None:
+def plot_bodyparts_y_pos_over_time(df: Union[pd.DataFrame, str], dest_dir: str, nodes: List[Union[Node, str]], ax: Axes = None) -> None:
     """Extracts a single point from `labels` and returns as a pandas DataFrame.
 
     Saves plot y-coordinates vs. time line graph as a file png in directory.
 
     Args:
-        slp_csv: csv file created by slp_to_paws_csv()
+        df: a `pandas.DataFrame` created by `node_positions_to_dataframe()` or a path to a file containing equivelent data
         dest_dir: file path for the destination directory
-        node_name: name of the body part node for which ycord_list was extracted from
+        nodes: bodyparts for which to plot
+        ax: Axes to plot on, if not provided, one will be created
     """
-    ycord_list = pd.read_table(slp_csv)
-    ycord_list.sort_values(by=["frame_idx"])
-    y_list = ycord_list["y"].tolist()
+    if isinstance(df, str):
+        df = read_dataframe_from_csv(df)
+
+    # convert nodes to strings
+    str_nodes = [node.name if isinstance(node, Node) else node for node in nodes]
+
+    if ax is None:
     fig, ax = plt.subplots(figsize=(20, 10))
+        own_fig = True
+    else:
+        fig = ax.get_figure()
+        own_fig = False
 
-    time = [x for x in range(len(y_list))]
-    ax.plot(time, y_list)
-    ax.set_ylabel(f"{node_name} Y Position")
+    palette = sns.color_palette("Paired", len(str_nodes))
+
+    for i, node in enumerate(str_nodes):
+        ax.plot(df.index.get_level_values("frame_idx"), df[(node, "y")], c=palette[i])
+
+    ax.set_ylabel(f"Bodypart Y Position")
     ax.set_xlabel("Frame Index")
-    ax.set_xticks(np.arange(0, len(time) + 1, 50))
-    ax.set_xticklabels(np.arange(0, len(time) + 1, 50), rotation=90)
+    ax.legend([f"{node} Y Position" for node in str_nodes])
+    sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
 
-    video_name = ycord_list["video"][0].split("/")[-1]
-    ax.set_title(f"{video_name}_{node_name}_ycord_vs_time")
-    ax.axis(xmin=-10, xmax=len(y_list) + 10)
+    video_name = os.path.basename(df.index.get_level_values("video")[0])
+    node_names = "_".join([node for node in str_nodes])
+    ax.set_title(f"{video_name}_[{node_names}]_ycord_vs_time")
+
+    max_x = int(df.index.max()[1])
+    ax.set_xticks(np.arange(0, max_x, 50))
+    ax.set_xticklabels(np.arange(0, max_x, 50), rotation=90)
+    ax.axis(xmin=-10, xmax=max_x + 10)
+
     fig.tight_layout()
-    ax.legend([f"{node_name} Y Position"])
-    fig.savefig(f"{dest_dir}/{video_name}_{node_name}_ycord_vs_time.png")
+    fig.savefig(os.path.join(dest_dir, f"{video_name}_[{node_names}]_ycord_vs_time.png"))
+    if own_fig:
+        plt.close(fig)
