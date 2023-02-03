@@ -237,7 +237,7 @@ def plot_bodyparts_y_pos_over_time(
 
     ax.set_ylabel(f"Bodypart Y Position")
     ax.set_xlabel("Frame Index")
-    ax.legend([f"{node} Y Position" for node in str_nodes])
+    ax.legend([f"{node}" for node in str_nodes])
     sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
 
     video_name = os.path.basename(df.index.get_level_values("video")[0])
