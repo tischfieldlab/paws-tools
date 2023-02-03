@@ -104,7 +104,7 @@ def slp_to_csv(
     # get the nodes to operate upon
     nodes = get_nodes_for_bodyparts(labels, body_part)
     ignore_nodes = get_nodes_for_bodyparts(labels, ignore_body_part)
-    nodes = list(set(nodes) - set(ignore_nodes))  # subtract any nodes the user wanted to ignore
+    nodes = sorted(list(set(nodes) - set(ignore_nodes)), key=lambda n: n.name)  # subtract any nodes the user wanted to ignore
 
     # convert labels coords to physical units
     labels = invert_y_axis(labels, frame_height)
