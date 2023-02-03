@@ -94,8 +94,12 @@ def slp_to_csv(
 
     The y-axis may also be inverted given --frame-height.
     """
+    print()  # give some breathing room in the console
+
     # parse the provided *.slp file
+    print("Loading SLEAP data (this may take a few minutes)....")
     labels = sleap_io.load_slp(slp_file)
+    print(" -> Done!\n")
 
     # get the nodes to operate upon
     nodes = get_nodes_for_bodyparts(labels, body_part)
