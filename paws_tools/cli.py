@@ -121,7 +121,7 @@ def slp_to_csv(
         csv_files = save_dataframe_to_grouped_csv(coords, "video", dest_dir, suffix="mm", format=format)
 
         if plot:
-            for csv_file in tqdm(csv_files, desc="Generating Plots (non-calibrated)", leave=False):
+            for csv_file in tqdm(csv_files, desc="Generating Plots (calibrated)", leave=False):
                 plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes, suffix="mm")
 
 
