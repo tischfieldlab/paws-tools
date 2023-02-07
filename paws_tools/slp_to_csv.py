@@ -1,14 +1,16 @@
 """Please add doc string for this module."""
 
 import os
-from typing import Any, Dict, List, Literal, Optional, Tuple, Union
-from matplotlib.axes import Axes
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from sleap_io import Labels, Node
 import seaborn as sns
+from matplotlib.axes import Axes
+from sleap_io import Labels, Node
 from tqdm import tqdm
+from typing_extensions import Literal
 
 
 def get_nodes_for_bodyparts(labels: Labels, body_parts: Union[str, Node, List[Union[str, Node]]]) -> List[Node]:

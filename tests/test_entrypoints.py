@@ -3,7 +3,7 @@ import pkgutil
 import subprocess
 from importlib import import_module
 from pathlib import Path
-from typing import List
+from typing_extensions import List
 
 import click
 import pytest

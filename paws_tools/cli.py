@@ -3,22 +3,22 @@
 
 import copy
 import os
-from typing import List, Literal
+from typing import List
 
 import click
 import sleap_io
 from tqdm import tqdm
+from typing_extensions import Literal
 
 from paws_tools.slp_to_csv import (
     convert_physical_units,
     get_nodes_for_bodyparts,
     invert_y_axis,
     node_positions_to_dataframe,
-    save_dataframe_to_grouped_csv,
     plot_bodyparts_y_pos_over_time,
+    save_dataframe_to_grouped_csv,
 )
 from paws_tools.util import click_monkey_patch_option_show_defaults
-
 
 # Show click option defaults
 click_monkey_patch_option_show_defaults()
