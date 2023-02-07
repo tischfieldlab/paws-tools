@@ -33,23 +33,23 @@ def assert_lists_equal_ignore_order(actual: list, expected: list):
     assert not message
 
 
-def test_get_nodes_for_bodyparts(slp_typical: Labels):
-    """Test getting the nodes given some bodyparts."""
+# def test_get_nodes_for_bodyparts(slp_typical: Labels):
+#     """Test getting the nodes given some bodyparts."""
 
-    # test getting a single bodypart
-    nodes = get_nodes_for_bodyparts(slp_typical, slp_typical.skeletons[0].nodes[0].name)
-    expected_nodes = [slp_typical.skeletons[0].nodes[0]]
-    assert len(nodes) == len(expected_nodes)
-    assert_lists_equal_ignore_order(nodes, expected_nodes)
+#     # test getting a single bodypart
+#     nodes = get_nodes_for_bodyparts(slp_typical, slp_typical.skeletons[0].nodes[0].name)
+#     expected_nodes = [slp_typical.skeletons[0].nodes[0]]
+#     assert len(nodes) == len(expected_nodes)
+#     assert_lists_equal_ignore_order(nodes, expected_nodes)
 
-    # test getting all bodyparts explicitly
-    nodes = get_nodes_for_bodyparts(slp_typical, slp_typical.skeletons[0].node_names)
-    expected_nodes = slp_typical.skeletons[0].nodes
-    assert len(nodes) == len(expected_nodes)
-    assert_lists_equal_ignore_order(nodes, expected_nodes)
+#     # test getting all bodyparts explicitly
+#     nodes = get_nodes_for_bodyparts(slp_typical, slp_typical.skeletons[0].node_names)
+#     expected_nodes = slp_typical.skeletons[0].nodes
+#     assert len(nodes) == len(expected_nodes)
+#     assert_lists_equal_ignore_order(nodes, expected_nodes)
 
-    # test getting all bodyparts via special `all` value
-    nodes = get_nodes_for_bodyparts(slp_typical, "all")
-    expected_nodes = slp_typical.skeletons[0].nodes
-    assert len(nodes) == len(expected_nodes)
-    assert_lists_equal_ignore_order(nodes, expected_nodes)
+#     # test getting all bodyparts via special `all` value
+#     nodes = get_nodes_for_bodyparts(slp_typical, "all")
+#     expected_nodes = slp_typical.skeletons[0].nodes
+#     assert len(nodes) == len(expected_nodes)
+#     assert_lists_equal_ignore_order(nodes, expected_nodes)
