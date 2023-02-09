@@ -54,10 +54,10 @@ create_group <- function(directory, strain){
   return(bdb_post_features)
 }
 
-Mouse_ID <- list("F1","M1","F3","M3","F4","M4","F6","M6")
+Mouse_ID <- list("F0","M0","F1","M1","F2","M2","F3","F4")
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/06VF-CNO","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/06VF-Saline","C57B6-")
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-06VF-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-06VF-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
@@ -71,8 +71,8 @@ Stim.df["Injury"] = "Baseline"
 Total.df <- Stim.df
 
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/4VF-CNO","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/4VF-Saline","C57B6-")
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-4VF-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-4VF-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
@@ -86,8 +86,8 @@ Stim.df["Injury"] = "Baseline"
 Total.df <- rbind(Total.df, Stim.df)
 
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Brush-CNO","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Brush-Saline","C57B6-")
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-Brush-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-Brush-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
@@ -100,8 +100,8 @@ Stim.df["Injury"] = "Baseline"
 
 Total.df <- rbind(Total.df, Stim.df)
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Pin-CNO","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Pin-Saline","C57B6-")
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-Pin-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Baseline-Pin-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
@@ -114,22 +114,8 @@ Stim.df["Injury"] = "Baseline"
 
 Total.df <- rbind(Total.df, Stim.df)
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/016VF-CNO-Chronic","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/016VF-Saline-Chronic","C57B6-")
-
-c_kde["Treatment"] = "CNO"
-c_kde$Mouse_ID <- Mouse_ID
-s_kde["Treatment"] = "Saline"
-s_kde$Mouse_ID = Mouse_ID
-
-Stim.df <- rbind(c_kde, s_kde)
-Stim.df["Stimulation"] = "0.16VF"
-Stim.df["Injury"] = "Chronic"
-
-Total.df <- rbind(Total.df, Stim.df)
-
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/06VF-CNO-Chronic","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/06VF-Saline-Chronic","C57B6-")
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-06VF-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-06VF-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
@@ -142,8 +128,11 @@ Stim.df["Injury"] = "Chronic"
 
 Total.df <- rbind(Total.df, Stim.df)
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/4VF-CNO-Chronic","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/4VF-Saline-Chronic","C57B6-")
+
+Total.df <- rbind(Total.df, Stim.df)
+
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-4VF-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-4VF-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
@@ -156,8 +145,8 @@ Stim.df["Injury"] = "Chronic"
 
 Total.df <- rbind(Total.df, Stim.df)
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Brush-CNO-Chronic","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Brush-Saline-Chronic","C57B6-")
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-Brush-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-Brush-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
@@ -170,13 +159,13 @@ Stim.df["Injury"] = "Chronic"
 
 Total.df <- rbind(Total.df, Stim.df)
 
-c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Pin-CNO-Chronic","C57B6-")
-s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/Pin-Saline-Chronic","C57B6-")
+c_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-Pin-CNO","C57B6-")
+s_kde <- create_group("C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Chronic-Pin-Saline","C57B6-")
 
 c_kde["Treatment"] = "CNO"
 c_kde$Mouse_ID <- Mouse_ID
 s_kde["Treatment"] = "Saline"
-s_kde$Mouse_ID = list("F1","M1","F3","M3","M4","F6","M6")
+s_kde$Mouse_ID = Mouse_ID
 
 Stim.df <- rbind(c_kde, s_kde)
 Stim.df["Stimulation"] = "Pin"
@@ -184,4 +173,4 @@ Stim.df["Injury"] = "Chronic"
 
 Total.df <- rbind(Total.df, Stim.df)
 
-write.xlsx(Total.df, "C:/Users/tomva/Desktop/2023_01_23/Total_dataframe.xlsx")
+write.xlsx(Total.df, "C:/Users/tomva/Desktop/2023_01_23/3-28vgatDCN/Total_dataframe.xlsx")
