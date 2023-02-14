@@ -57,6 +57,12 @@ def get_nodes_for_bodyparts(labels: Labels, body_parts: Union[str, Node, List[Un
 def node_positions_to_dataframe(labels: Labels, nodes: List[Node]) -> pd.DataFrame:
     """Extracts a single node from `labels` and returns its coordinates as a pandas DataFrame.
 
+    Only the first predicted instance in each frame will be used.
+
+    If a given frame does not have any predicted instances or the predicted instance does not contain
+    a node in `nodes`, then the coordinates for that node and frame will be set to `numpy.nan` in the
+    resulting dataframe.
+
     Args:
         labels: labels from which to extract data
         nodes: the nodes for which to extract data
@@ -72,8 +78,14 @@ def node_positions_to_dataframe(labels: Labels, nodes: List[Node]) -> pd.DataFra
             "frame_idx": frame.frame_idx,
         }
         for node in nodes:
-            row[(node.name, "x")] = frame.predicted_instances[0].points[node].x
-            row[(node.name, "y")] = frame.predicted_instances[0].points[node].y
+            if (len(frame.predicted_instances) <= 0) or (node not in frame.predicted_instances[0].points):
+                # we don't have any predicted instances, or this node was not present in this predicted instance
+                # allocate space in the dataframe for this point, but set the values to NaNs.
+                row[(node.name, "x")] = np.nan
+                row[(node.name, "y")] = np.nan
+            else:
+                row[(node.name, "x")] = frame.predicted_instances[0].points[node].x
+                row[(node.name, "y")] = frame.predicted_instances[0].points[node].y
         data.append(row)
 
     df = pd.DataFrame(data)  # convert to pandas dataframe
