@@ -21,8 +21,8 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
 
     for l in range(len(labels.labeled_frames)):
         frame = labels.labeled_frames[l]
-        print(len(labels.labeled_frames))
-        print(len(labels.tracks))
+        #print(len(labels.labeled_frames)) = 5001
+        #print(len(labels.tracks)) = 0
         data.append(
             {
                 "video": frame.video.filename,
