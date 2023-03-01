@@ -3,7 +3,30 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from sleap_io import Labels
+from sleap_io import Track
+
+
+
+def add_track_to_slp(labels: Labels):
+    """Adds sleap_io Track to 'labels' and return the updated 'labels'
+
+    Args:
+        labels: labels from which to extract data
+
+    Returns:
+        labels updated with added Track
+    """
+
+    my_track = Track("mouse") 
+
+    for frame in labels.frame:
+        for instance in frame.predicted_instances:
+            instance.track = my_track
+
+    return labels
+
 
 
 def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.DataFrame:
@@ -19,30 +42,15 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
     data = []
     node = labels.skeletons[0][node_name]
 
-    for l in range(len(labels.labeled_frames)):
-        frame = labels.labeled_frames[l]
-        #print(len(labels.labeled_frames)) = 5001
-        #print(len(labels.tracks)) = 0
+    for frame in labels.labeled_frames:
         data.append(
             {
                 "video": frame.video.filename,
                 "frame_idx": frame.frame_idx,
                 "x": frame.predicted_instances[0].points[node].x,
                 "y": frame.predicted_instances[0].points[node].y,
-                # labels.tracks have len of 0
-                #"track": labels.tracks[l]
             }
         )
-
-    '''for frame in labels.labeled_frames:
-        data.append(
-            {
-                "video": frame.video.filename,
-                "frame_idx": frame.frame_idx,
-                "x": frame.predicted_instances[0].points[node].x,
-                "y": frame.predicted_instances[0].points[node].y,
-            }
-        )'''
 
     return pd.DataFrame(data)
 
