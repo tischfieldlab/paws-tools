@@ -21,15 +21,17 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
 
     for l in range(len(labels.labeled_frames)):
         frame = labels.labeled_frames[l]
-        data.append(
+        print(len(labels.labeled_frames))
+        print(len(labels.tracks))
+        '''data.append(
             {
                 "video": frame.video.filename,
                 "frame_idx": frame.frame_idx,
                 "x": frame.predicted_instances[0].points[node].x,
                 "y": frame.predicted_instances[0].points[node].y,
-                #"track": labels.tracks[l]
+                "track": labels.tracks[l]
             }
-        )
+        )'''
 
     '''for frame in labels.labeled_frames:
         data.append(
