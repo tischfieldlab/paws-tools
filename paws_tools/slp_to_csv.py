@@ -19,7 +19,7 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
     data = []
     node = labels.skeletons[0][node_name]
 
-    for l in range(len(labels)):
+    for l in range(len(labels.labeled_frames)):
         frame = labels.labeled_frames[l]
         data.append(
             {
