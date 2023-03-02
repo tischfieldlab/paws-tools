@@ -49,7 +49,6 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
                 "frame_idx": frame.frame_idx,
                 "x": frame.predicted_instances[0].points[node].x,
                 "y": frame.predicted_instances[0].points[node].y,
-                "track": frame.predicted_instances[0].track,
             }
         )
 
