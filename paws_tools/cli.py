@@ -64,9 +64,9 @@ def slp_to_paws_csv(
 @cli.command(name="slp-to-paws-add-track", short_help="Add sleap.io Track to SLEAP slp file")
 @click.argument("slp_file", type=click.Path(exists=True, dir_okay=False))
 def plot_trace(slp_file: str):
-    """Given a str slp_csv file name and destination directionry filename (dest_dir), and spicified by body-part -bp.
+    """Given a SLEAP *.slp file, add track object to slp file.
 
-    Save a png file named f"{video_name}_{body_part}_ycord_vs_time.png" trace graph and saved to destination directory.
+    Return the updated SLEAP *.slp file.
     """
     labels = sleap_io.load_slp(slp_file)
     add_track_to_slp(labels)
