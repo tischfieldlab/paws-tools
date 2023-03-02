@@ -19,7 +19,7 @@ def add_track_to_slp(labels: Labels):
         labels updated with added Track
     """
 
-    my_track = Track("mouse") 
+    my_track = Track("mouse")
 
     for frame in labels.frame:
         for instance in frame.predicted_instances:
@@ -49,6 +49,7 @@ def node_positions_to_dataframe(labels: Labels, node_name: str = "Toe") -> pd.Da
                 "frame_idx": frame.frame_idx,
                 "x": frame.predicted_instances[0].points[node].x,
                 "y": frame.predicted_instances[0].points[node].y,
+                "track": frame.predicted_instances[0].track,
             }
         )
 

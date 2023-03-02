@@ -6,7 +6,7 @@ import os
 import click
 import sleap_io
 
-from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe, slp_csv_plot
+from paws_tools.slp_to_csv import convert_physical_units, invert_y_axis, node_positions_to_dataframe, slp_csv_plot, add_track_to_slp
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
 
@@ -61,6 +61,15 @@ def slp_to_paws_csv(
 
     slp_csv_plot(dest, dest_dir, body_part)
 
+@cli.command(name="slp-to-paws-add-track", short_help="Add sleap.io Track to SLEAP slp file")
+@click.argument("slp_file", type=click.Path(exists=True, dir_okay=False))
+def plot_trace(slp_file: str):
+    """Given a str slp_csv file name and destination directionry filename (dest_dir), and spicified by body-part -bp.
+
+    Save a png file named f"{video_name}_{body_part}_ycord_vs_time.png" trace graph and saved to destination directory.
+    """
+    labels = sleap_io.load_slp(slp_file)
+    add_track_to_slp(labels)
 
 @cli.command(name="slp-to-paws-plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
 @click.argument("slp_csv", type=click.Path(exists=True, dir_okay=False))
