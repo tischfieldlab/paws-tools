@@ -21,7 +21,7 @@ def add_track_to_slp(labels: Labels):
 
     my_track = Track("mouse")
 
-    for frame in labels.frame:
+    for frame in labels.labeled_frames:
         for instance in frame.predicted_instances:
             instance.track = my_track
 
