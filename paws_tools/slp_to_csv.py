@@ -22,7 +22,6 @@ def add_track_to_slp(labels: Labels):
     Returns:
         labels updated with added Track
     """
-
     my_track = Track("mouse")
 
     for frame in labels.labeled_frames:
