@@ -8,9 +8,27 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.axes import Axes
-from sleap_io import Labels, Node
+from sleap_io import Labels, Node, Track
 from tqdm import tqdm
 from typing_extensions import Literal
+
+
+def add_track_to_slp(labels: Labels):
+    """Adds sleap_io Track to labels and return the updated labels.
+
+    Args:
+        labels: labels from which to extract data
+
+    Returns:
+        labels updated with added Track
+    """
+    my_track = Track("mouse")
+
+    for frame in labels.labeled_frames:
+        for instance in frame.predicted_instances:
+            instance.track = my_track
+
+    return labels
 
 
 def get_nodes_for_bodyparts(labels: Labels, body_parts: Union[str, Node, List[Union[str, Node]]]) -> List[Node]:

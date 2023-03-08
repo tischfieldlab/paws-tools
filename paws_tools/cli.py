@@ -17,6 +17,7 @@ from paws_tools.slp_to_csv import (
     node_positions_to_dataframe,
     plot_bodyparts_y_pos_over_time,
     save_dataframe_to_grouped_csv,
+    add_track_to_slp,
 )
 from paws_tools.util import click_monkey_patch_option_show_defaults
 
@@ -123,6 +124,17 @@ def slp_to_csv(
         if plot:
             for csv_file in tqdm(csv_files, desc="Generating Plots (calibrated)", leave=False):
                 plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes, suffix="mm")
+
+
+@cli.command(name="slp-to-paws-add-track", short_help="Add sleap.io Track to SLEAP slp file")
+@click.argument("slp_file", type=click.Path(exists=True, dir_okay=False))
+def add_track(slp_file: str):
+    """Given a SLEAP *.slp file, add track object to slp file.
+
+    Return the updated SLEAP *.slp file.
+    """
+    labels = sleap_io.load_slp(slp_file)
+    add_track_to_slp(labels)
 
 
 @cli.command(name="plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
