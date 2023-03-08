@@ -14,7 +14,7 @@ from typing_extensions import Literal
 
 
 def add_track_to_slp(labels: Labels):
-    """Adds sleap_io Track to 'labels' and return the updated 'labels.'
+    """Adds sleap_io Track to labels and return the updated labels.
 
     Args:
         labels: labels from which to extract data
