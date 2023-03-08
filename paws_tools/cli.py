@@ -125,15 +125,17 @@ def slp_to_csv(
             for csv_file in tqdm(csv_files, desc="Generating Plots (calibrated)", leave=False):
                 plot_bodyparts_y_pos_over_time(csv_file, dest_dir, nodes, suffix="mm")
 
+
 @cli.command(name="slp-to-paws-add-track", short_help="Add sleap.io Track to SLEAP slp file")
 @click.argument("slp_file", type=click.Path(exists=True, dir_okay=False))
-def plot_trace(slp_file: str):
+def add_track(slp_file: str):
     """Given a SLEAP *.slp file, add track object to slp file.
 
     Return the updated SLEAP *.slp file.
     """
     labels = sleap_io.load_slp(slp_file)
     add_track_to_slp(labels)
+
 
 @cli.command(name="plot-trace", short_help="Plot slp_csv file to body part trace graph png file")
 @click.argument("slp_csv", type=click.Path(exists=True, dir_okay=False))
